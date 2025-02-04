@@ -22,7 +22,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \item Consider the following integral:
-\[\int_{a}^{b} (7-x^2)dx.\]
+\[\int_{a}^{b} (7-2x^2)dx.\]
 While this is a relatively straightforward integral -- split the difference and use power rule for integration -- we can approximate the area under this curve using Riemann sums. Below, I describe four rules for computing Riemann sums using rectangles of width $\delta_x$.
 \begin{itemize}
   \item Left Rule uses the left points to create the rectangles.
@@ -68,7 +68,12 @@ mid.points <- (left.points+right.points)/2
   \item Write code that computes the area using the Trapezoidial Rule.\\
   \textbf{Solution:}
 <<size="scriptsize", warning=FALSE, message=FALSE>>=
-# Write code for answer here.
+trapezoid.middle <- left.points[2:100]
+
+(total <- (sum(2*(integrand(trapezoid.middle))) + (integrand(left.points[1])) + (integrand(right.points[100])))
+  *delta.x /2)
+
+
 @
   \item Write a function that takes \texttt{a}, \texttt{b}, and number of 
   rectangles (\texttt{n.rect}) in as input and returns the Trapezoidial Rule 
@@ -76,7 +81,7 @@ mid.points <- (left.points+right.points)/2
   skeleton below. When you are done, remove \texttt{eval=FALSE} to show that
   the function provides the expected result for the example above.\\
   \textbf{Solution:}
-<<eval=FALSE, size="scriptsize", warning=FALSE, message=FALSE>>=
+<<size="scriptsize", warning=FALSE, message=FALSE>>=
 riemann.sums <- function(fnct,                        # function to integrate
                          a,                           # lower bound of integral
                          b,                           # upper bound of integral
@@ -94,17 +99,25 @@ riemann.sums <- function(fnct,                        # function to integrate
   if(!(is.numeric(n.rect)) | (n.rect%%1!=0)){ # if n.rect is not a whole number
     stop("The number of rectangles must be a positive whole number.")
   }
+  if(a > b){
+    stop("bounds invalid")
+  }
   ######################################
   # Compute Area
   ######################################
+  delta.x <- (b-a)/n.rect
+  left.sides <- a + 0:((n.rect-1))*(delta.x)
+  right.sides <- a + 1:((n.rect))*(delta.x)
+
   if(method == "Left"){
-    # Add necessary code here
+    area <- sum(delta.x*(integrand(left.sides)))
   }else if(method == "Right"){
-    # Add necessary code here
+    area <- sum(delta.x*(integrand(right.sides)))
   }else if(method == "Midpoint"){
-    # Add necessary code here
+    area <- sum(delta.x*(integrand((left.points+right.points)/2)))
   }else if(method == "Trapezoidial"){
-    # Add necessary code here
+    trapezoid.middle <- left.sides[2:100]
+    area <- (sum(2*(integrand(trapezoid.middle))) + (integrand(left.sides[1])) + (integrand(right.sides[100])))*delta.x /2
   }else{
     stop("Please select a valid method (e.g., 'Left', 'Right', 'Midpoint', 'Trapezoidial')")
   }
